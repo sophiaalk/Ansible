@@ -1,0 +1,19 @@
+---
+- name: InstaLL nginx web server
+  hosts: all
+  become: yes
+  tasks:
+    - name: check file exists
+      stat:
+        path: /tmp/file
+      register: file_status
+
+    - name: Print file exists
+      debug: 
+        msg: "The file exist"
+      when: file_status.stat.exists
+
+    - name: Print file does not exist
+      debug:
+        msg: "The file does not exists"
+      when: not file_status.stat.exists

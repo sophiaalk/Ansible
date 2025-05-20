@@ -1,0 +1,41 @@
+---
+- name: InstaLL nginx web server
+  hosts: all
+  become: yes
+  tasks:
+    - name: Update apt cache
+      ansible.builtin.apt:
+        update_cache: yes
+    - name: Ensure Nginx package install at latest version
+      ansible.builtin.apt:
+        name: nginx
+        state: present
+    - name: Copy file with owner and permissions
+      ansible.builtin.copy:
+        src: ~/workspace/ansible/nginx.file
+        dest: /etc/nginx/nginx.file
+    - name: Restart service httpd, in all cases
+      ansible.builtin.service:
+        name: nginx
+        state: restarted
+
+    - name: Print status
+      debug:
+        msg: Nginx installed successfully
+          
+    - name: Execute shell command
+      shell: 
+        cmd: echo "df -H"
+      register: shell_output
+
+    - name: Dispaly shell output
+      debug:
+        msg: "The command output is: {{ shell_output.stdout }}"
+
+    - name: Print boot image
+      debug:
+        msg: "The Boot Image is: {{ ansible_cmdline.BOOT_IMAGE }}"
+
+    - name: Print server Ips
+      debug:
+        msg: "The IP Address of server is: {{ ansible_all_ipv4_addresses }}"
